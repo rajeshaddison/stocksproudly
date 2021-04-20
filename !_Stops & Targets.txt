@@ -1,0 +1,36 @@
+[IntrabarOrderGeneration = True]
+
+inputs:
+	PositionBasis( false ) [DisplayName = "PositionBasis", ToolTip = 
+	 "Enter true if currency amounts (profit targets, stops, etc.) are for the entire position;  enter false if currency amounts are per share or per contract."],
+	ProfitPercent( 0.001 ) [DisplayName = "StopLossAmt", ToolTip = 
+	 "Profit percent of the share value."],
+	StopLossAmt( 0 ) [DisplayName = "StopLossAmt", ToolTip = 
+	 "Stop Loss Amount.  Enter the amount of the stop loss.  Enter 0 for no stop loss."],
+	BreakevenFloorAmt( 0 ) [DisplayName = "BreakevenFloorAmt", ToolTip = 
+	 "Breakeven Floor Amount.  Enter amount of open profit required to activate breakeven stop."],
+	CurrencyTrailingAmt( 0 ) [DisplayName = "CurrencyTrailingAmt", ToolTip = 
+	 "Currency Trailing Amount.  Enter amount of currency trailing stop.  Enter 0 for no currency trailing stop."],
+	PctTrailingFloorAmt( 0 ) [DisplayName = "PctTrailingFloorAmt", ToolTip = 
+	 "Percent Trailing Floor Amount.  Enter amount of open profit required to activate percentage trailing stop.  Enter 0 for no percent trailing stop."],
+	PctTrailingPct( 0 ) [DisplayName = "PctTrailingPct", ToolTip = 
+	 "Percent Trailing Percent.  Enter percentage amount of percentage trailing stop.  Enter 0 for no trailing stop."],
+	ExitOnClose( 0 ) [DisplayName = "ExitOnClose", ToolTip = 
+	 "Enter one to force exit at end of day.  Enter zero to not force exit at end of day."];
+
+Variables:
+	ProfitTargetAmt( 0 ),
+	LossTargetAmt( 0 );
+
+if PositionBasis then
+	SetStopPosition 
+else
+	SetStopShare;
+
+ProfitTargetAmt = EntryPrice * ProfitPercent;
+LossTargetAmt = EntryPrice * ProfitPercent;
+
+if ProfitTargetAmt > 0 then
+	SetProfitTarget( ProfitTargetAmt );
+if StopLossAmt > 0 then
+	SetStopLoss( LossTargetAmt );
